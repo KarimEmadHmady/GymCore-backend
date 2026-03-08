@@ -68,3 +68,40 @@ export const deleteAttendanceRecordService = async (id) => {
   if (!record) throw new Error('Attendance record not found');
   return record;
 };
+
+export const getRecentAttendanceCountService = async () => {
+  const oneAndHalfHoursAgo = new Date(Date.now() - (1.5 * 60 * 60 * 1000));
+  
+  const count = await AttendanceRecord.countDocuments({
+    date: { $gte: oneAndHalfHoursAgo },
+    status: 'present'
+  });
+
+  let crowdLevel;
+  let crowdStatus;
+  
+  if (count <= 5) {
+    crowdLevel = 'low';
+    crowdStatus = 'غير مزدحم';
+  } else if (count <= 10) {
+    crowdLevel = 'light';
+    crowdStatus = 'خفيف';
+  } else if (count <= 15) {
+    crowdLevel = 'moderate';
+    crowdStatus = 'متوسط';
+  } else if (count <= 20) {
+    crowdLevel = 'busy';
+    crowdStatus = 'مزدحم';
+  } else {
+    crowdLevel = 'very_busy';
+    crowdStatus = 'مزدحم جداً';
+  }
+
+  return {
+    count,
+    crowdLevel,
+    crowdStatus,
+    timeRange: 'آخر ساعة ونصف',
+    timestamp: new Date()
+  };
+};

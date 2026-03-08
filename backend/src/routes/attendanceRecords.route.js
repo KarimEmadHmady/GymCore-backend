@@ -6,13 +6,17 @@ import {
   getAttendanceRecordsByUser,
   updateAttendanceRecord,
   deleteAttendanceRecord,
-  getAllAttendanceRecords
+  getAllAttendanceRecords,
+  getRecentAttendanceCount
 } from '../controllers/attendanceRecords.controller.js';
 
 const router = express.Router();
 
 // إنشاء سجل حضور جديد
 router.post('/', authenticate, createAttendanceRecord);
+
+// جلب عدد الحضور في آخر ساعة ونصف مع مستوى الزحام
+router.get('/crowd-level', authenticate, getRecentAttendanceCount);
 
 // جلب كل سجلات الحضور
 router.get('/', authenticate, authorizeRole(['admin','manager', 'trainer']), getAllAttendanceRecords);

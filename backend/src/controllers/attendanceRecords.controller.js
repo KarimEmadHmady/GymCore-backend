@@ -3,7 +3,8 @@ import {
     getAttendanceRecordsByUserService,
     updateAttendanceRecordService,
     deleteAttendanceRecordService,
-    getAllAttendanceRecordsService
+    getAllAttendanceRecordsService,
+    getRecentAttendanceCountService
   } from '../services/attendanceRecords.service.js';
   
   // إنشاء سجل حضور جديد
@@ -55,4 +56,13 @@ import {
       res.status(400).json({ message: err.message });
     }
   };
-  
+
+  // جلب عدد الحضور في آخر ساعة ونصف مع مستوى الزحام
+  export const getRecentAttendanceCount = async (req, res) => {
+    try {
+      const data = await getRecentAttendanceCountService();
+      res.status(200).json(data);
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
+  };
